@@ -1,0 +1,140 @@
+/**
+ * Checklist jQuery plugin stylesheet
+ * @author   Albert Hilazo
+ * @version  1.0.0
+ *
+ * @link     https://github.com/albhilazo/checklist
+ * @link     http://jsfiddle.net/albhilazo/anby8wnw
+ */
+
+/* Color palette
+ *   inactive border:   #c8c8c8
+ *   inactive color:    #646464
+ *   active border:     #0693be
+ *   active background: #0693be
+ *   active color:      #ffffff
+ *   hover background:  #339dbd
+ */
+
+div.checklist,
+   .checklist {
+    border: 1px solid #c8c8c8;
+    -webkit-border-radius: 3px;
+       -moz-border-radius: 3px;
+        -ms-border-radius: 3px;
+         -o-border-radius: 3px;
+            border-radius: 3px;
+
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    height: auto;
+    line-height: 16px;
+
+    color: #646464;
+    font-family: Verdana, Tahoma, sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+    text-decoration: none;
+
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    }
+
+div.checklist:hover,
+   .checklist:hover {
+    border: 1px solid #0693be;
+    -webkit-border-radius: 3px 3px 0 0;
+       -moz-border-radius: 3px 3px 0 0;
+        -ms-border-radius: 3px 3px 0 0;
+         -o-border-radius: 3px 3px 0 0;
+            border-radius: 3px 3px 0 0;
+    background-color: #0693be;
+    color: #fff;
+    }
+
+
+div.checklist>.checklist-label,
+   .checklist>.checklist-label {
+    position: relative;
+    padding-left: 10px;
+    padding-right: 15px;
+    height: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    }
+
+
+div.checklist>.list,
+   .checklist>.list {
+    display: none;
+    position: absolute;
+    list-style-type: none;
+    border: 1px solid #0693be;
+    -webkit-border-radius: 0 3px 3px 3px;
+       -moz-border-radius: 0 3px 3px 3px;
+        -ms-border-radius: 0 3px 3px 3px;
+         -o-border-radius: 0 3px 3px 3px;
+            border-radius: 0 3px 3px 3px;
+    background-color: #0693be;
+    color: #fff;
+    margin: -1px 0 0 -1px;
+    padding: 5px 0 5px 0;
+
+    min-width: 100%;
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    }
+
+
+div.checklist>.list>li { white-space: nowrap; }
+
+div.checklist>.list>li>label,
+   .checklist>.list>li>label {
+    display: block;
+    padding-left: 6px;
+    padding-right: 10px;
+    }
+
+div.checklist>.list>li>label:hover,
+   .checklist>.list>li>label:hover {
+    background-color: #339dbd;
+    }
+
+div.checklist>.list>li>label,
+div.checklist>.list>li>label>input,
+   .checklist>.list>li>label,
+   .checklist>.list>li>label>input {
+    width: inherit;
+    cursor: pointer;
+    /* Align with label */
+    vertical-align: bottom;
+    margin-top: 3px;
+    margin-bottom: 1px;
+    }
+
+
+/* Dropdown arrow */
+div.checklist>.checklist-label:after,
+   .checklist>.checklist-label:after {
+    content:'';
+    height: 0;
+    position: absolute;
+    width: 0;
+    border: 4px solid transparent;
+    border-top-color: #000;
+    top: 50%;
+    right: 10px;
+    margin-top: -3px;
+    margin-right: -3px;
+    }
+
+div.checklist:hover>.checklist-label:after,
+   .checklist:hover>.checklist-label:after {
+    border-top-color: #fff;
+    }
