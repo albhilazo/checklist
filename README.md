@@ -6,8 +6,7 @@ A simple jQuery-based checklist plugin.
 
 ## Setup
 Just copy the JS and CSS files to your project and load them using:
-```
-#!html
+```html
 <link rel="stylesheet" href="path/to/albhilazo.checklist.css" type="text/css">
 <script type="text/javascript" src="path/to/albhilazo.checklist.js"></script>
 ```
@@ -15,15 +14,13 @@ Just copy the JS and CSS files to your project and load them using:
 ## Usage
 This checklist only needs two things to work: a container node and a list of items.
 It can be initialized in two ways:
-```
-#!js
+```js
 $('#container').albhilazo_checklist({ items: ["item1", "item2"] });
 $.fn.albhilazo.checklist('#container', { items: ["item1", "item2"] });
 ```
 
 This is the full set of options and their default value:
-```
-#!js
+```js
 $('#container').albhilazo_checklist({
     items:     [],                  // Array of items to load
     placement: 'replace',           // How it will be inserted in the container (accepted: 'replace', 'prepend', 'append')
