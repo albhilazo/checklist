@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin stylesheet
  * @author   Albert Hilazo
- * @version  1.0.0
+ * @version  1.0.1
  *
  * @link     https://github.com/albhilazo/checklist
  * @link     http://jsfiddle.net/albhilazo/anby8wnw
@@ -73,6 +73,7 @@ div.checklist>.list,
    .checklist>.list {
     display: none;
     position: absolute;
+    z-index: 200;
     list-style-type: none;
     border: 1px solid #0693be;
     -webkit-border-radius: 0 3px 3px 3px;

@@ -2,7 +2,7 @@
 
 A simple jQuery-based checklist plugin.
 
-## [Demo](http://jsfiddle.net/albhilazo/anby8wnw)
+## [Demos](http://jsfiddle.net/albhilazo/anby8wnw)
 
 ## Setup
 Just copy the JS and CSS files to your project and load them using:
