@@ -57,10 +57,7 @@
 
         /** Injected HTML collection */
         self.html = {
-            checklist:     "<div class='checklist'> \
-                                <div class='checklist-label'>{labelAll}</div> \
-                                <ul class='list'></ul> \
-                            </div>",
+            checklist:     "<div class='checklist'> <div class='checklist-label'>{labelAll}</div> <ul class='list'></ul> </div>",
             checklistItem: "<li><label><input type='checkbox' {checked}/>{item}</label></li>"
         };
 
