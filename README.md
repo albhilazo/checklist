@@ -23,8 +23,8 @@ $.fn.albhilazo.checklist('#container', { items: ["item1", "item2"] });
 This is the full set of options and their default value:
 ```js
 $('#container').albhilazo_checklist({
-    items:     [],                // Array of items to load
-    checked:   false,             // Boolean. True if all items are initially checked, false if unchecked
+    items:     [],                // Array of items to load. Two-dimensional array specifies item status ( [['item1',true], ['item2',false]] ).
+    checked:   false,             // Boolean. Default checked status if not specified in items (true = checked).
     placement: 'replace',         // How it will be inserted in the container (accepted: 'replace', 'prepend', 'append')
     width:     '100%',            // Width value for the label, not the list
     height:    '300px',           // Max height before displaying a scrollbar

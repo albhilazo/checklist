@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin
  * @author    Albert Hilazo
- * @version   1.0.1
+ * @version   1.0.2
  *
  * @requires  jquery-1.6+
  *
@@ -32,29 +32,77 @@
 
         /** Default settings */
         self.settings = $.extend({
-            labelAll:      'All',
-            labelFiltered: 'Filtered',
-            labelNone:     'None',
-
+            items:     [],
+            checked:   false,
             placement: 'replace',
             width:     '',
             height:    '',
-            items:     [],
-            checked:   false,
 
             onChange: function() {},
-            onChangeParams: {}
+            onChangeParams: {},
+
+            labelAll:      'All',
+            labelFiltered: 'Filtered',
+            labelNone:     'None'
         }, options);
+        
+        /** String collection */
+        self.strings = {
+            errorType:      'ERROR (albhilazo.checklist): "{curtype}" is not a supported'
+                            + ' value type for "{option}" option. Expected type "{exptype}".',
+            errorPlacement: 'ERROR (albhilazo.checklist): "{placement}" is not a supported'
+                            + ' value for "placement" option. Supported values are "replace",'
+                            + ' "prepend" and "append".'
+        };
 
         /** Injected HTML collection */
         self.html = {
-            'checklist':            "<div class='checklist'> \
-                                         <div class='checklist-label'>"
-                                         + self.settings.labelAll +
-                                         "</div> \
-                                         <ul class='list'></ul> \
-                                     </div>",
-            'checklist-item': "<li><label><input type='checkbox' {checked}/>{item}</label></li>"
+            checklist:     "<div class='checklist'> \
+                                <div class='checklist-label'>{labelAll}</div> \
+                                <ul class='list'></ul> \
+                            </div>",
+            checklistItem: "<li><label><input type='checkbox' {checked}/>{item}</label></li>"
+        };
+
+
+
+
+        /**
+         * Checks that the given option matches the given type.
+         * @param {String} optName - Option name.
+         * @param {Object} optValue - Option value.
+         * @param {String} expType - Expected option type.
+         */
+        self.checkOptionType = function(optName, optValue, expType) {
+            if (typeof optValue !== expType) {
+                // Output error
+                console.error(self.strings.errorType
+                                  .replace('{curtype}', typeof optValue)
+                                  .replace('{option}', optName)
+                                  .replace('{exptype}', expType));
+            }
+        };
+
+
+
+
+        /**
+         * Checks that every option matches its correct type.
+         * @see {@link http://javascript.info/tutorial/type-detection}
+         */
+        self.checkSettingsTypes = function() {
+            self.checkOptionType('items', self.settings.items, 'object');
+            self.checkOptionType('checked', self.settings.checked, 'boolean');
+            self.checkOptionType('placement', self.settings.placement, 'string');
+            self.checkOptionType('width', self.settings.width, 'string');
+            self.checkOptionType('height', self.settings.height, 'string');
+            
+            self.checkOptionType('onChange', self.settings.onChange, 'function');
+            self.checkOptionType('onChangeParams', self.settings.onChangeParams, 'object');
+            
+            self.checkOptionType('labelAll', self.settings.labelAll, 'string');
+            self.checkOptionType('labelFiltered', self.settings.labelFiltered, 'string');
+            self.checkOptionType('labelNone', self.settings.labelNone, 'string');
         };
 
 
@@ -75,6 +123,34 @@
             else
                 $label.html( self.settings.labelNone );
         };
+        
+        
+        
+        
+        /**
+         * Creates the list items
+         */
+        self.createListItems = function() {
+            $.each(self.settings.items, function(itemIndex, itemValue) {
+                // Loop through given items
+                var itemCheck, itemLabel;
+                if (typeof itemValue === 'object' && itemValue.length > 1) {
+                    // ['item', true]
+                    itemCheck = (itemValue[1]) ? 'checked' : '';
+                    itemLabel = itemValue[0];
+                } else {
+                    // ['item']
+                    itemCheck = (self.settings.checked) ? 'checked' : '';
+                    itemLabel = itemValue;
+                }
+                
+                // Append <li>
+                $nodeChecklist.children('ul.list')
+                              .append(self.html.checklistItem
+                                          .replace('{item}', itemLabel)
+                                          .replace('{checked}', itemCheck));
+            });
+        }
 
 
 
@@ -105,9 +181,8 @@
                 case 'append':
                     $(container).append($nodeChecklist); break;
                 default:
-                    console.error('ERROR (albhilazo.checklist): "' + self.settings.placement
-                                  + '" is not a supported value for "placement" option.'
-                                  + ' Supported values are "replace", "prepend" and "append".');
+                    console.error(self.strings.errorPlacement
+                                      .replace('{placement}', self.settings.placement));
             }
         };
 
@@ -118,7 +193,12 @@
          * Initializer.
          */
         self.init = function() {
-            $nodeChecklist = $(self.html['checklist']);
+            // Check settings
+            self.checkSettingsTypes();
+            
+            // Prepare DOM node
+            $nodeChecklist = $(self.html.checklist
+                                   .replace('{labelAll}', self.settings.labelAll));
 
             // Set dimensions if specified
             if (self.settings.width)
@@ -126,15 +206,8 @@
             if (self.settings.height)
                 $nodeChecklist.find('ul.list').css('max-height', self.settings.height);
 
-            // Generate list items
-            $.each(self.settings.items, function(itemIndex, itemValue) {
-                // Loop through given items
-                var itemCheck = (self.settings.checked) ? 'checked' : '';
-                $nodeChecklist.children('ul.list')
-                              .append(self.html['checklist-item']
-                                          .replace('{item}', itemValue)
-                                          .replace('{checked}', itemCheck));
-            });
+            // Create list items
+            self.createListItems();
 
             // Assign checklist hover event
             $nodeChecklist.hover(
