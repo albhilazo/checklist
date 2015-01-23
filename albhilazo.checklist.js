@@ -12,6 +12,7 @@
 
 ;(function($){
 
+    // Check namespace
     if(!$.fn.albhilazo) {
         $.fn.albhilazo = {};
     }
@@ -39,6 +40,7 @@
             width:     '',
             height:    '',
             items:     [],
+            checked:   false,
 
             onChange: function() {},
             onChangeParams: {}
@@ -52,8 +54,7 @@
                                          "</div> \
                                          <ul class='list'></ul> \
                                      </div>",
-            'checklist-item-open':  "<li><label><input type='checkbox' checked/>",
-            'checklist-item-close': "</label></li>"
+            'checklist-item': "<li><label><input type='checkbox' {checked}/>{item}</label></li>"
         };
 
 
@@ -128,10 +129,11 @@
             // Generate list items
             $.each(self.settings.items, function(itemIndex, itemValue) {
                 // Loop through given items
+                var itemCheck = (self.settings.checked) ? 'checked' : '';
                 $nodeChecklist.children('ul.list')
-                              .append(self.html['checklist-item-open']
-                                      + itemValue
-                                      + self.html['checklist-item-close']);
+                              .append(self.html['checklist-item']
+                                          .replace('{item}', itemValue)
+                                          .replace('{checked}', itemCheck));
             });
 
             // Assign checklist hover event
