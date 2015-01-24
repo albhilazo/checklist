@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin
  * @author    Albert Hilazo
- * @version   1.0.2
+ * @version   1.0.3
  *
  * @requires  jquery-1.6+
  *
@@ -34,6 +34,7 @@
         self.settings = $.extend({
             items:     [],
             checked:   false,
+            type:      'checkbox',
             placement: 'replace',
             width:     '',
             height:    '',
@@ -43,7 +44,8 @@
 
             labelAll:      'All',
             labelFiltered: 'Filtered',
-            labelNone:     'None'
+            labelNone:     'None',
+            labelLinks:    'Links'
         }, options);
         
         /** String collection */
@@ -58,7 +60,8 @@
         /** Injected HTML collection */
         self.html = {
             checklist:     "<div class='checklist'> <div class='checklist-label'>{labelAll}</div> <ul class='list'></ul> </div>",
-            checklistItem: "<li><label><input type='checkbox' {checked}/>{item}</label></li>"
+            checkboxItem: "<li><label><input type='checkbox' {checked}/>{item}</label></li>",
+            linkItem: "<li><a href='{url}'>{item}</a></li>"
         };
 
 
@@ -90,6 +93,7 @@
         self.checkSettingsTypes = function() {
             self.checkOptionType('items', self.settings.items, 'object');
             self.checkOptionType('checked', self.settings.checked, 'boolean');
+            self.checkOptionType('type', self.settings.type, 'string');
             self.checkOptionType('placement', self.settings.placement, 'string');
             self.checkOptionType('width', self.settings.width, 'string');
             self.checkOptionType('height', self.settings.height, 'string');
@@ -100,6 +104,7 @@
             self.checkOptionType('labelAll', self.settings.labelAll, 'string');
             self.checkOptionType('labelFiltered', self.settings.labelFiltered, 'string');
             self.checkOptionType('labelNone', self.settings.labelNone, 'string');
+            self.checkOptionType('labelLinks', self.settings.labelLinks, 'string');
         };
 
 
@@ -110,15 +115,20 @@
          */
         self.updateLabel = function() {
             var $label    = $nodeChecklist.children('.checklist-label');
-            var numChecks = $nodeChecklist.find('ul.list input').length;
-            var $checked  = $nodeChecklist.find('ul.list input:checked');
-
-            if ($checked.length === numChecks)
-                $label.html( self.settings.labelAll );
-            else if ($checked.length > 0)
-                $label.html( self.settings.labelFiltered );
-            else
-                $label.html( self.settings.labelNone );
+            
+            if (self.settings.type == 'link') {
+                $label.html( self.settings.labelLinks );
+            } else {
+                var numChecks = $nodeChecklist.find('ul.list input').length;
+                var $checked  = $nodeChecklist.find('ul.list input:checked');
+    
+                if ($checked.length === numChecks)
+                    $label.html( self.settings.labelAll );
+                else if ($checked.length > 0)
+                    $label.html( self.settings.labelFiltered );
+                else
+                    $label.html( self.settings.labelNone );
+            }
         };
         
         
@@ -130,22 +140,30 @@
         self.createListItems = function() {
             $.each(self.settings.items, function(itemIndex, itemValue) {
                 // Loop through given items
-                var itemCheck, itemLabel;
-                if (typeof itemValue === 'object' && itemValue.length > 1) {
-                    // ['item', true]
-                    itemCheck = (itemValue[1]) ? 'checked' : '';
-                    itemLabel = itemValue[0];
+                if (self.settings.type == 'link') {
+                    // ['item', 'url']
+                    $nodeChecklist.children('ul.list')
+                                  .append(self.html.linkItem
+                                              .replace('{item}', itemValue[0])
+                                              .replace('{url}', itemValue[1]));
                 } else {
-                    // ['item']
-                    itemCheck = (self.settings.checked) ? 'checked' : '';
-                    itemLabel = itemValue;
+                    var itemCheck, itemLabel;
+                    if (typeof itemValue === 'object' && itemValue.length > 1) {
+                        // ['item', true]
+                        itemCheck = (itemValue[1]) ? 'checked' : '';
+                        itemLabel = itemValue[0];
+                    } else {
+                        // ['item']
+                        itemCheck = (self.settings.checked) ? 'checked' : '';
+                        itemLabel = itemValue;
+                    }
+                    
+                    // Append <li>
+                    $nodeChecklist.children('ul.list')
+                                  .append(self.html.checkboxItem
+                                              .replace('{item}', itemLabel)
+                                              .replace('{checked}', itemCheck));
                 }
-                
-                // Append <li>
-                $nodeChecklist.children('ul.list')
-                              .append(self.html.checklistItem
-                                          .replace('{item}', itemLabel)
-                                          .replace('{checked}', itemCheck));
             });
         }
 
@@ -213,8 +231,10 @@
             );
 
             // Assign checklist change event
-            $nodeChecklist.find('ul.list input:checkbox')
-                          .change(self.eventChange);
+            if (self.settings.type != 'link') {
+                $nodeChecklist.find('ul.list input:checkbox')
+                              .change(self.eventChange);
+            }
 
             // Update label before placing
             self.updateLabel();

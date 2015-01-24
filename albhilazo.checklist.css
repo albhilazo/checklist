@@ -15,8 +15,7 @@
  *   hover background:  #339dbd
  */
 
-div.checklist,
-   .checklist {
+.checklist {
     border: 1px solid #c8c8c8;
     -webkit-border-radius: 3px;
        -moz-border-radius: 3px;
@@ -43,8 +42,7 @@ div.checklist,
             user-select: none;
     }
 
-div.checklist:hover,
-   .checklist:hover {
+.checklist:hover {
     border: 1px solid #0693be;
     -webkit-border-radius: 3px 3px 0 0;
        -moz-border-radius: 3px 3px 0 0;
@@ -56,8 +54,7 @@ div.checklist:hover,
     }
 
 
-div.checklist>.checklist-label,
-   .checklist>.checklist-label {
+.checklist>.checklist-label {
     position: relative;
     padding-left: 10px;
     padding-right: 15px;
@@ -68,8 +65,7 @@ div.checklist>.checklist-label,
     }
 
 
-div.checklist>.list,
-   .checklist>.list {
+.checklist>.list {
     display: none;
     position: absolute;
     z-index: 200;
@@ -92,24 +88,23 @@ div.checklist>.list,
     }
 
 
-div.checklist>.list>li { white-space: nowrap; }
+.checklist>.list>li { white-space: nowrap; }
 
-div.checklist>.list>li>label,
-   .checklist>.list>li>label {
+.checklist>.list>li>label,
+.checklist>.list>li>a {
     display: block;
     padding-left: 6px;
     padding-right: 10px;
     }
 
-div.checklist>.list>li>label:hover,
-   .checklist>.list>li>label:hover {
+.checklist>.list>li>label:hover,
+.checklist>.list>li>a:hover {
     background-color: #339dbd;
     }
 
-div.checklist>.list>li>label,
-div.checklist>.list>li>label>input,
-   .checklist>.list>li>label,
-   .checklist>.list>li>label>input {
+.checklist>.list>li>label,
+.checklist>.list>li>label>input,
+.checklist>.list>li>a {
     width: inherit;
     cursor: pointer;
     /* Align with label */
@@ -119,9 +114,15 @@ div.checklist>.list>li>label>input,
     }
 
 
+/* Override link style */
+.checklist>.list>li>a {
+    text-decoration: none;
+    color: #fff;
+}
+
+
 /* Dropdown arrow */
-div.checklist>.checklist-label:after,
-   .checklist>.checklist-label:after {
+.checklist>.checklist-label:after {
     content:'';
     height: 0;
     position: absolute;
@@ -134,7 +135,6 @@ div.checklist>.checklist-label:after,
     margin-right: -3px;
     }
 
-div.checklist:hover>.checklist-label:after,
-   .checklist:hover>.checklist-label:after {
+.checklist:hover>.checklist-label:after {
     border-top-color: #fff;
     }
