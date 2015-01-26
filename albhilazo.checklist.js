@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin
  * @author    Albert Hilazo
- * @version   1.0.3
+ * @version   1.0.4
  *
  * @requires  jquery-1.6+
  *
@@ -28,13 +28,17 @@
 
         // Avoid scope issues
         var self = this;
+
+        self.NAME = 'albhilazo.checklist';
+        
+        var data = $(container).data(self.NAME);
         var $nodeChecklist;
 
         /** Default settings */
         self.settings = $.extend({
             items:     [],
-            checked:   false,
             type:      'checkbox',
+            checked:   false,
             placement: 'replace',
             width:     '',
             height:    '',
@@ -49,19 +53,19 @@
         }, options);
         
         /** String collection */
-        self.strings = {
-            errorType:      'ERROR (albhilazo.checklist): "{curtype}" is not a supported'
+        var _strings = {
+            errorType:      'ERROR (' + self.NAME + '): "{curtype}" is not a supported'
                             + ' value type for "{option}" option. Expected type "{exptype}".',
-            errorPlacement: 'ERROR (albhilazo.checklist): "{placement}" is not a supported'
+            errorPlacement: 'ERROR (' + self.NAME + '): "{placement}" is not a supported'
                             + ' value for "placement" option. Supported values are "replace",'
                             + ' "prepend" and "append".'
         };
 
         /** Injected HTML collection */
-        self.html = {
-            checklist:     "<div class='checklist'> <div class='checklist-label'>{labelAll}</div> <ul class='list'></ul> </div>",
+        var _html = {
+            checklist:    "<div class='checklist'> <div class='checklist-label'>{labelAll}</div> <ul class='list'></ul> </div>",
             checkboxItem: "<li><label><input type='checkbox' {checked}/>{item}</label></li>",
-            linkItem: "<li><a href='{url}'>{item}</a></li>"
+            linkItem:     "<li><a href='{url}'>{item}</a></li>"
         };
 
 
@@ -73,13 +77,13 @@
          * @param {Object} optValue - Option value.
          * @param {String} expType - Expected option type.
          */
-        self.checkOptionType = function(optName, optValue, expType) {
+        var _checkOptionType = function(optName, optValue, expType) {
             if (typeof optValue !== expType) {
                 // Output error
-                console.error(self.strings.errorType
-                                  .replace('{curtype}', typeof optValue)
-                                  .replace('{option}', optName)
-                                  .replace('{exptype}', expType));
+                console.error(_strings.errorType
+                                      .replace('{curtype}', typeof optValue)
+                                      .replace('{option}', optName)
+                                      .replace('{exptype}', expType));
             }
         };
 
@@ -90,21 +94,21 @@
          * Checks that every option matches its correct type.
          * @see {@link http://javascript.info/tutorial/type-detection}
          */
-        self.checkSettingsTypes = function() {
-            self.checkOptionType('items', self.settings.items, 'object');
-            self.checkOptionType('checked', self.settings.checked, 'boolean');
-            self.checkOptionType('type', self.settings.type, 'string');
-            self.checkOptionType('placement', self.settings.placement, 'string');
-            self.checkOptionType('width', self.settings.width, 'string');
-            self.checkOptionType('height', self.settings.height, 'string');
+        var _checkSettingsTypes = function() {
+            _checkOptionType('items', self.settings.items, 'object');
+            _checkOptionType('checked', self.settings.checked, 'boolean');
+            _checkOptionType('type', self.settings.type, 'string');
+            _checkOptionType('placement', self.settings.placement, 'string');
+            _checkOptionType('width', self.settings.width, 'string');
+            _checkOptionType('height', self.settings.height, 'string');
             
-            self.checkOptionType('onChange', self.settings.onChange, 'function');
-            self.checkOptionType('onChangeParams', self.settings.onChangeParams, 'object');
+            _checkOptionType('onChange', self.settings.onChange, 'function');
+            _checkOptionType('onChangeParams', self.settings.onChangeParams, 'object');
             
-            self.checkOptionType('labelAll', self.settings.labelAll, 'string');
-            self.checkOptionType('labelFiltered', self.settings.labelFiltered, 'string');
-            self.checkOptionType('labelNone', self.settings.labelNone, 'string');
-            self.checkOptionType('labelLinks', self.settings.labelLinks, 'string');
+            _checkOptionType('labelAll', self.settings.labelAll, 'string');
+            _checkOptionType('labelFiltered', self.settings.labelFiltered, 'string');
+            _checkOptionType('labelNone', self.settings.labelNone, 'string');
+            _checkOptionType('labelLinks', self.settings.labelLinks, 'string');
         };
 
 
@@ -113,7 +117,7 @@
         /**
          * Updates the checklist's label according to the checked items.
          */
-        self.updateLabel = function() {
+        var _updateLabel = function() {
             var $label    = $nodeChecklist.children('.checklist-label');
             
             if (self.settings.type == 'link') {
@@ -137,15 +141,15 @@
         /**
          * Creates the list items
          */
-        self.createListItems = function() {
+        var _createListItems = function() {
             $.each(self.settings.items, function(itemIndex, itemValue) {
                 // Loop through given items
                 if (self.settings.type == 'link') {
                     // ['item', 'url']
                     $nodeChecklist.children('ul.list')
-                                  .append(self.html.linkItem
-                                              .replace('{item}', itemValue[0])
-                                              .replace('{url}', itemValue[1]));
+                                  .append(_html.linkItem
+                                               .replace('{item}', itemValue[0])
+                                               .replace('{url}', itemValue[1]));
                 } else {
                     var itemCheck, itemLabel;
                     if (typeof itemValue === 'object' && itemValue.length > 1) {
@@ -160,9 +164,9 @@
                     
                     // Append <li>
                     $nodeChecklist.children('ul.list')
-                                  .append(self.html.checkboxItem
-                                              .replace('{item}', itemLabel)
-                                              .replace('{checked}', itemCheck));
+                                  .append(_html.checkboxItem
+                                               .replace('{item}', itemLabel)
+                                               .replace('{checked}', itemCheck));
                 }
             });
         }
@@ -175,10 +179,10 @@
          * Will call specified "onChange" function in {@link self.settings}.
          * @param {Event} e - Change event object.
          */
-        self.eventChange = function(e) {
-            self.updateLabel();
-
+        var _eventChange = function(e) {
             self.settings.onChange(e, $nodeChecklist, self.settings.onChangeParams);
+
+            _updateLabel();
         };
 
 
@@ -187,7 +191,7 @@
         /**
          * Places the checklist in the DOM.
          */
-        self.place = function() {
+        var _place = function() {
             switch (self.settings.placement) {
                 case 'replace':
                     $(container).html($nodeChecklist); break;
@@ -196,8 +200,8 @@
                 case 'append':
                     $(container).append($nodeChecklist); break;
                 default:
-                    console.error(self.strings.errorPlacement
-                                      .replace('{placement}', self.settings.placement));
+                    console.error(_strings.errorPlacement
+                                          .replace('{placement}', self.settings.placement));
             }
         };
 
@@ -209,10 +213,10 @@
          */
         self.init = function() {
             // Check settings
-            self.checkSettingsTypes();
+            _checkSettingsTypes();
             
             // Prepare DOM node
-            $nodeChecklist = $(self.html.checklist
+            $nodeChecklist = $(_html.checklist
                                    .replace('{labelAll}', self.settings.labelAll));
 
             // Set dimensions if specified
@@ -222,7 +226,7 @@
                 $nodeChecklist.find('ul.list').css('max-height', self.settings.height);
 
             // Create list items
-            self.createListItems();
+            _createListItems();
 
             // Assign checklist hover event
             $nodeChecklist.hover(
@@ -233,19 +237,24 @@
             // Assign checklist change event
             if (self.settings.type != 'link') {
                 $nodeChecklist.find('ul.list input:checkbox')
-                              .change(self.eventChange);
+                              .change(_eventChange);
             }
 
             // Update label before placing
-            self.updateLabel();
+            _updateLabel();
 
             // Place it in the DOM
-            self.place();
+            _place();
+
+            // Set data
+            $(container).data(self.NAME, self);
         };
 
 
-        // Initialize
-        self.init();
+        if (data == undefined)
+            self.init();    // Initialize
+        else
+            return data;    // Instance data
 
     };
 
@@ -258,7 +267,18 @@
      */
     $.fn.albhilazo_checklist = function(options) {
         return this.each(function() {
-            (new $.fn.albhilazo.checklist(this, options));
+            var data = $(this).data('albhilazo.checklist');
+            if (data == undefined)
+                // Set new instance to data
+                $(this).data('albhilazo.checklist', (new $.fn.albhilazo.checklist(this, options)));
+            if (typeof options == 'string') {
+                // Manage methods
+                if (data[options])
+                    data[options]();
+                else
+                    console.error('ERROR (albhilazo.checklist): "' + options
+                                  + '" is not a supported method.');
+            }
         });
     };
 
