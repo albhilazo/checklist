@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin
  * @author    Albert Hilazo
- * @version   1.0.4
+ * @version   1.0.5
  *
  * @requires  jquery-1.6+
  *
@@ -31,6 +31,7 @@
 
         // Public
         self.NAME = 'albhilazo.checklist';
+        self.settings = {};
 
         // Private
         var _data = $(container).data(self.NAME);
@@ -38,11 +39,12 @@
 
 
         /** Default settings */
-        self.settings = $.extend({
+        var _defaults = {
             items:     [],
             type:      'checkbox',
+            trigger:   'hover',
             checked:   false,
-            placement: 'replace',
+            placement: 'append',
             width:     '',
             height:    '',
 
@@ -53,15 +55,24 @@
             labelFiltered: 'Filtered',
             labelNone:     'None',
             labelLinks:    'Links'
-        }, options);
+        };
         
         /** String collection */
         var _strings = {
-            errorType:      'ERROR (' + self.NAME + '): "{curtype}" is not a supported'
-                            + ' value type for "{option}" option. Expected type "{exptype}".',
-            errorPlacement: 'ERROR (' + self.NAME + '): "{placement}" is not a supported'
+            error: {
+                optType:    'ERROR (' + self.NAME + '): "{curtype}" is not a supported'
+                            + ' value type for "{option}" option. Expected type "{exptype}".'
+                            + ' Using default value.',
+                type:       'ERROR (' + self.NAME + '): "{type}" is not a supported'
+                            + ' value for "type" option. Supported values are "checkbox" and'
+                            + ' "link". Using default value.',
+                trigger:    'ERROR (' + self.NAME + '): "{trigger}" is not a supported'
+                            + ' value for "trigger" option. Supported values are "hover" and'
+                            + ' "click". Using default value.',
+                placement:  'ERROR (' + self.NAME + '): "{placement}" is not a supported'
                             + ' value for "placement" option. Supported values are "replace",'
-                            + ' "prepend" and "append".'
+                            + ' "prepend" and "append". Using default value.'
+            }
         };
 
         /** Injected HTML collection */
@@ -69,6 +80,19 @@
             checklist:    "<div class='checklist'> <div class='checklist-label'>{labelAll}</div> <ul class='list'></ul> </div>",
             checkboxItem: "<li><label><input type='checkbox' {checked}/>{item}</label></li>",
             linkItem:     "<li><a href='{url}'>{item}</a></li>"
+        };
+
+
+
+
+        /**
+         * Outputs a console error for the given option and resets it to its default value.
+         * @param {String} optName - Option name.
+         */
+        var _showError = function(optName) {
+            console.error(_strings.error[optName]
+                                  .replace('{'+optName+'}', self.settings[optName]));
+            self.settings[optName] = _defaults[optName];
         };
 
 
@@ -83,10 +107,12 @@
         var _checkOptionType = function(optName, optValue, expType) {
             if (typeof optValue !== expType) {
                 // Output error
-                console.error(_strings.errorType
+                console.error(_strings.error.optType
                                       .replace('{curtype}', typeof optValue)
                                       .replace('{option}', optName)
                                       .replace('{exptype}', expType));
+                // Set default
+                self.settings[optName] = _defaults[optName];
             }
         };
 
@@ -99,8 +125,9 @@
          */
         var _checkSettingsTypes = function() {
             _checkOptionType('items', self.settings.items, 'object');
-            _checkOptionType('checked', self.settings.checked, 'boolean');
             _checkOptionType('type', self.settings.type, 'string');
+            _checkOptionType('trigger', self.settings.trigger, 'string');
+            _checkOptionType('checked', self.settings.checked, 'boolean');
             _checkOptionType('placement', self.settings.placement, 'string');
             _checkOptionType('width', self.settings.width, 'string');
             _checkOptionType('height', self.settings.height, 'string');
@@ -150,10 +177,14 @@
                 if (self.settings.type == 'link') {
                     // ['item', 'url']
                     _$nodeChecklist.children('ul.list')
-                                  .append(_html.linkItem
-                                               .replace('{item}', itemValue[0])
-                                               .replace('{url}', itemValue[1]));
+                                   .append(_html.linkItem
+                                                .replace('{item}', itemValue[0])
+                                                .replace('{url}', itemValue[1]));
                 } else {
+                    // Check invalid and set default
+                    if (self.settings.type != 'checkbox')
+                        _showError('type');
+
                     var itemCheck, itemLabel;
                     if (typeof itemValue === 'object' && itemValue.length > 1) {
                         // ['item', true]
@@ -165,14 +196,14 @@
                         itemLabel = itemValue;
                     }
                     
-                    // Append <li>
+                    // Append new item
                     _$nodeChecklist.children('ul.list')
-                                  .append(_html.checkboxItem
-                                               .replace('{item}', itemLabel)
-                                               .replace('{checked}', itemCheck));
+                                   .append(_html.checkboxItem
+                                                .replace('{item}', itemLabel)
+                                                .replace('{checked}', itemCheck));
                 }
             });
-        }
+        };
 
 
 
@@ -192,19 +223,64 @@
 
 
         /**
+         * Binds events to the checklist.
+         */
+        var _bindEvents = function() {
+            // Trigger
+            if (self.settings.trigger == 'click') {
+                // Click
+                _$nodeChecklist.click(
+                    function() { $(this).children('ul.list').toggle(); }
+                );
+            } else {
+                // Check invalid and set default
+                if (self.settings.trigger != 'hover')
+                    _showError('trigger');
+
+                // Hover
+                _$nodeChecklist.hover(
+                    function() { $(this).children('ul.list').show(); },
+                    function() { $(this).children('ul.list').hide(); }
+                );
+            }
+
+            // onChange
+            if (self.settings.type == 'checkbox') {
+                _$nodeChecklist.find('ul.list input:checkbox')
+                              .change(_eventChange);
+            }
+        };
+
+
+
+
+        /**
+         * Sets dimensions if specified
+         */
+        var _resize = function() {
+            if (self.settings.width)
+                _$nodeChecklist.css('width', self.settings.width);
+            if (self.settings.height)
+                _$nodeChecklist.find('ul.list').css('max-height', self.settings.height);
+        };
+
+
+
+
+        /**
          * Places the checklist in the DOM.
          */
         var _place = function() {
-            switch (self.settings.placement) {
-                case 'replace':
-                    $(container).html(_$nodeChecklist); break;
-                case 'prepend':
-                    $(container).prepend(_$nodeChecklist); break;
-                case 'append':
-                    $(container).append(_$nodeChecklist); break;
-                default:
-                    console.error(_strings.errorPlacement
-                                          .replace('{placement}', self.settings.placement));
+            if (self.settings.placement == 'replace') {
+                $(container).html(_$nodeChecklist);
+            } else if (self.settings.placement == 'prepend') {
+                $(container).prepend(_$nodeChecklist);
+            } else {
+                // Check invalid and set default
+                if (self.settings.placement != 'append')
+                    _showError('placement');
+
+                $(container).append(_$nodeChecklist);
             }
         };
 
@@ -215,38 +291,22 @@
          * Initializer.
          */
         self.init = function() {
-            // Check settings
+            // Set and check settings
+            self.settings = $.extend({}, _defaults, options);
             _checkSettingsTypes();
-            
+
             // Prepare DOM node
             _$nodeChecklist = $(_html.checklist
-                                   .replace('{labelAll}', self.settings.labelAll));
+                                     .replace('{labelAll}', self.settings.labelAll));
 
-            // Set dimensions if specified
-            if (self.settings.width)
-                _$nodeChecklist.css('width', self.settings.width);
-            if (self.settings.height)
-                _$nodeChecklist.find('ul.list').css('max-height', self.settings.height);
+            _resize();
 
-            // Create list items
             _createListItems();
 
-            // Assign checklist hover event
-            _$nodeChecklist.hover(
-                function() { $(this).children('ul.list').show(); },
-                function() { $(this).children('ul.list').hide(); }
-            );
+            _bindEvents();
 
-            // Assign checklist change event
-            if (self.settings.type != 'link') {
-                _$nodeChecklist.find('ul.list input:checkbox')
-                              .change(_eventChange);
-            }
-
-            // Update label before placing
             _updateLabel();
 
-            // Place it in the DOM
             _place();
 
             // Set instance data
@@ -255,7 +315,7 @@
 
 
         if (_data == undefined)
-            self.init();    // Initialize
+            self.init();     // Initialize
         else
             return _data;    // Instance data
 

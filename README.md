@@ -29,18 +29,19 @@ $('#container').albhilazo_checklist({
     // Both methods can be used at the same time ( ["item1", ["item2",true]] )
     // If the 'type' option is set to 'links' the format must be ( [["item1","url1"], ["item2","url2"]] )
     items:     [],
-    type:      'checkbox'         // Defines the type of the items (accepted: 'checkbox', 'links')
-    checked:   false,             // Boolean. Default checked status if not specified in items (true = checked)
-    placement: 'replace',         // How it will be inserted in the container (accepted: 'replace', 'prepend', 'append')
-    width:     '100%',            // Width value for the label, not the list
-    height:    '300px',           // Max height before displaying a scrollbar
+    type:      'checkbox',      // Defines the type of the items (accepted: 'checkbox', 'link')
+    trigger:   'hover',         // Defines the event that will show the list (accepted: 'hover', 'click')
+    checked:   false,           // Boolean. Default checked status if not specified in items (true = checked)
+    placement: 'append',        // How it will be inserted in the container (accepted: 'replace', 'prepend', 'append')
+    width:     '100%',          // Width value for the label, not the list
+    height:    '300px',         // Max height before displaying a scrollbar
 
     onChange: function(e, $chlist, onChangeParams) {},  // Callback when an item is checked/unchecked
-    onChangeParams: {},                                  // Extra parameters that will be passed to 'onChange'
+    onChangeParams: {},                                 // Extra parameters that will be passed to 'onChange'
 
-    labelAll:      'All',         // Text displayed for all checked
-    labelFiltered: 'Filtered',    // Text displayed for some checked
-    labelNone:     'None',        // Text displayed for none checked
-    labelLinks:    'Links'        // Text displayed if 'type'='links'
+    labelAll:      'All',       // Text displayed for all checked
+    labelFiltered: 'Filtered',  // Text displayed for some checked
+    labelNone:     'None',      // Text displayed for none checked
+    labelLinks:    'Links'      // Text displayed if 'type'='links'
 });
 ```
