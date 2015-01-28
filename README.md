@@ -7,20 +7,18 @@ A simple jQuery-based checklist plugin.
 ## Setup
 Just copy the JS and CSS files to your project and load them using:
 ```html
-<link rel="stylesheet" href="path/to/albhilazo.checklist.css" type="text/css">
-<script type="text/javascript" src="path/to/albhilazo.checklist.js"></script>
+<link rel="stylesheet" type="text/css" href="path/to/albhilazo.checklist.css">
+<script type="text/javascript" src="path/to/albhilazo.checklist.min.js"></script>
 ```
 
 ## Usage
-This checklist only needs two things to work: a container node and a list of items.
-It can be initialized in two ways:
+This checklist only needs two things to work: a container element and a list of items.
+To initialize it:
 ```js
 $('#container').albhilazo_checklist({ items: ["item1", "item2"] });
-// or
-$.fn.albhilazo.checklist('#container', { items: ["item1", "item2"] });
 ```
 
-This is the full set of options and their default value:
+There is a set of available options, this is a list with their default value:
 ```js
 $('#container').albhilazo_checklist({
     // The items loaded in the checklist are defined with the option 'items'
@@ -44,4 +42,32 @@ $('#container').albhilazo_checklist({
     labelNone:     'None',      // Text displayed for none checked
     labelLinks:    'Links'      // Text displayed if 'type'='links'
 });
+```
+
+To get a reference to an initialized instance do:
+```js
+$.fn.albhilazo.checklist('#container');
+// or, also accepts a jQuery object
+$.fn.albhilazo.checklist($('#container'));
+```
+
+This way you can get the instance's settings:
+```js
+$.fn.albhilazo.checklist('#container').settings;
+```
+
+
+### Methods
+There's also a set of methods that can be called in both ways:
+```js
+$('#container').albhilazo_checklist('method');
+// or
+$.fn.albhilazo.checklist('#container').method();
+```
+
+The following methods are available:
+```js
+$('#container').albhilazo_checklist(
+    'destroy'   // Destroys the checklist and the data associated to its instance
+);
 ```

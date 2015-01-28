@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin
  * @author    Albert Hilazo
- * @version   1.0.5
+ * @version   1.0.6
  *
  * @requires  jquery-1.6+
  *
@@ -288,9 +288,22 @@
 
 
         /**
+         * Destroys the checklist and the data associated to its instance
+         */
+        self.destroy = function() {
+            // Remove element
+            $(container).children('div.checklist').remove();
+            // Remove container data
+            $(container).removeData(self.NAME);
+        };
+
+
+
+
+        /**
          * Initializer.
          */
-        self.init = function() {
+        var _init = function() {
             // Set and check settings
             self.settings = $.extend({}, _defaults, options);
             _checkSettingsTypes();
@@ -308,14 +321,10 @@
             _updateLabel();
 
             _place();
-
-            // Set instance data
-            $(container).data(self.NAME, self);
         };
 
-
-        if (_data == undefined)
-            self.init();     // Initialize
+        if (_data == undefined && typeof options == 'object' && options )
+            _init();         // Initialize
         else
             return _data;    // Instance data
 
@@ -325,7 +334,9 @@
 
 
     /**
-     * Redirects to {@link $.fn.albhilazo.checklist} adding the chained selector as a container.
+     * Creates a new instance of {@link $.fn.albhilazo.checklist}
+     *   adding the chained selector as a container.
+     * If "options" is a method name, tries to call it.
      * @param {Object} options - Specified options that will overwrite the default settings.
      */
     $.fn.albhilazo_checklist = function(options) {
