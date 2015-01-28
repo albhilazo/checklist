@@ -60,14 +60,16 @@ $.fn.albhilazo.checklist('#container').settings;
 ### Methods
 There's also a set of methods that can be called in both ways:
 ```js
-$('#container').albhilazo_checklist('method');
+$('#container').albhilazo_checklist('method', methodParam);
 // or
-$.fn.albhilazo.checklist('#container').method();
+$.fn.albhilazo.checklist('#container').method(methodParam);
 ```
 
 The following methods are available:
 ```js
 $('#container').albhilazo_checklist(
-    'destroy'   // Destroys the checklist and the data associated to its instance
+    'addItems', ["item1", "item2"]      // Adds the given items to the checklist
+    'removeItems', ["item1", "item2"]   // Removes the matching items from the checklist
+    'destroy'                           // Destroys the checklist instance
 );
 ```

@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin
  * @author    Albert Hilazo
- * @version   1.0.6
+ * @version   1.0.7
  *
  * @requires  jquery-1.6+
  *
@@ -32,10 +32,10 @@
         // Public
         self.NAME = 'albhilazo.checklist';
         self.settings = {};
+        self.$nodeChecklist = '';
 
         // Private
         var _data = $(container).data(self.NAME);
-        var _$nodeChecklist;
 
 
         /** Default settings */
@@ -84,6 +84,8 @@
 
 
 
+
+        /* Private methods ************************************************************ */
 
         /**
          * Outputs a console error for the given option and resets it to its default value.
@@ -148,13 +150,13 @@
          * Updates the checklist's label according to the checked items.
          */
         var _updateLabel = function() {
-            var $label    = _$nodeChecklist.children('.checklist-label');
+            var $label = self.$nodeChecklist.children('.checklist-label');
             
             if (self.settings.type == 'link') {
                 $label.html( self.settings.labelLinks );
             } else {
-                var numChecks = _$nodeChecklist.find('ul.list input').length;
-                var $checked  = _$nodeChecklist.find('ul.list input:checked');
+                var numChecks = self.$nodeChecklist.find('ul.list input').length;
+                var $checked  = self.$nodeChecklist.find('ul.list input:checked');
     
                 if ($checked.length === numChecks)
                     $label.html( self.settings.labelAll );
@@ -164,22 +166,131 @@
                     $label.html( self.settings.labelNone );
             }
         };
-        
-        
-        
-        
+
+
+
+
         /**
-         * Creates the list items
+         * onChange event handler.
+         * Will call specified "onChange" function in {@link self.settings}.
+         * @param {Event} e - Change event object.
          */
-        var _createListItems = function() {
-            $.each(self.settings.items, function(itemIndex, itemValue) {
+        var _eventChange = function(e) {
+            self.settings.onChange(e, self.$nodeChecklist, self.settings.onChangeParams);
+
+            _updateLabel();
+        };
+
+
+
+
+        /**
+         * Binds events to the checklist.
+         */
+        var _bindEvents = function() {
+            // Trigger
+            if (self.settings.trigger == 'click') {
+                // Click
+                self.$nodeChecklist.click(
+                    function() { $(this).children('ul.list').toggle(); }
+                );
+            } else {
+                // Check invalid and set default
+                if (self.settings.trigger != 'hover')
+                    _showError('trigger');
+
+                // Hover
+                self.$nodeChecklist.hover(
+                    function() { $(this).children('ul.list').show(); },
+                    function() { $(this).children('ul.list').hide(); }
+                );
+            }
+
+            // onChange
+            if (self.settings.type == 'checkbox') {
+                self.$nodeChecklist.find('ul.list input:checkbox')
+                                   .change(_eventChange);
+            }
+        };
+
+
+
+
+        /**
+         * Sets dimensions if specified.
+         */
+        var _resize = function() {
+            if (self.settings.width)
+                self.$nodeChecklist.css('width', self.settings.width);
+            if (self.settings.height)
+                self.$nodeChecklist.find('ul.list').css('max-height', self.settings.height);
+        };
+
+
+
+
+        /**
+         * Places the checklist in the DOM.
+         */
+        var _place = function() {
+            if (self.settings.placement == 'replace') {
+                $(container).html(self.$nodeChecklist);
+            } else if (self.settings.placement == 'prepend') {
+                $(container).prepend(self.$nodeChecklist);
+            } else {
+                // Check invalid and set default
+                if (self.settings.placement != 'append')
+                    _showError('placement');
+
+                $(container).append(self.$nodeChecklist);
+            }
+        };
+
+
+
+
+        /**
+         * Initializer.
+         */
+        var _init = function() {
+            // Set and check settings
+            self.settings = $.extend({}, _defaults, options);
+            _checkSettingsTypes();
+
+            // Prepare DOM node
+            self.$nodeChecklist = $(_html.checklist
+                                         .replace('{labelAll}', self.settings.labelAll));
+
+            _resize();
+
+            self.addItems(self.settings.items);
+
+            _bindEvents();
+
+            _updateLabel();
+
+            _place();
+        };
+
+
+
+
+        /* Public methods ************************************************************* */
+
+        /**
+         * Adds the given items to the checklist.
+         * @param {Array} items - Array of items that follows the same format as "settings.items".
+         */
+        self.addItems = function(items) {
+            $.each(items, function(itemIndex, itemValue) {
                 // Loop through given items
                 if (self.settings.type == 'link') {
                     // ['item', 'url']
-                    _$nodeChecklist.children('ul.list')
-                                   .append(_html.linkItem
-                                                .replace('{item}', itemValue[0])
-                                                .replace('{url}', itemValue[1]));
+                    // Append new item
+                    self.$nodeChecklist.children('ul.list')
+                                       .append(_html.linkItem
+                                                    .replace('{item}', itemValue[0])
+                                                    .replace('{url}', itemValue[1]));
                 } else {
                     // Check invalid and set default
                     if (self.settings.type != 'checkbox')
@@ -197,10 +308,10 @@
                     }
                     
                     // Append new item
-                    _$nodeChecklist.children('ul.list')
-                                   .append(_html.checkboxItem
-                                                .replace('{item}', itemLabel)
-                                                .replace('{checked}', itemCheck));
+                    self.$nodeChecklist.children('ul.list')
+                                       .append(_html.checkboxItem
+                                                    .replace('{item}', itemLabel)
+                                                    .replace('{checked}', itemCheck));
                 }
             });
         };
@@ -209,86 +320,23 @@
 
 
         /**
-         * onChange event handler.
-         * Will call specified "onChange" function in {@link self.settings}.
-         * @param {Event} e - Change event object.
+         * Removes the matching items from the checklist.
+         * @param {Array} items - Array of strings that will be matched against the items names.
          */
-        var _eventChange = function(e) {
-            self.settings.onChange(e, _$nodeChecklist, self.settings.onChangeParams);
-
-            _updateLabel();
-        };
+        self.removeItems = function(items) {
+            // Loop through checklist items
+            self.$nodeChecklist.find('ul.list > li').each(function(itemIndex,itemElement) {
+                // If item is in the array
+                if (items.indexOf($(itemElement).text()) > -1)
+                    $(itemElement).remove();
+            });
+        }
 
 
 
 
         /**
-         * Binds events to the checklist.
-         */
-        var _bindEvents = function() {
-            // Trigger
-            if (self.settings.trigger == 'click') {
-                // Click
-                _$nodeChecklist.click(
-                    function() { $(this).children('ul.list').toggle(); }
-                );
-            } else {
-                // Check invalid and set default
-                if (self.settings.trigger != 'hover')
-                    _showError('trigger');
-
-                // Hover
-                _$nodeChecklist.hover(
-                    function() { $(this).children('ul.list').show(); },
-                    function() { $(this).children('ul.list').hide(); }
-                );
-            }
-
-            // onChange
-            if (self.settings.type == 'checkbox') {
-                _$nodeChecklist.find('ul.list input:checkbox')
-                              .change(_eventChange);
-            }
-        };
-
-
-
-
-        /**
-         * Sets dimensions if specified
-         */
-        var _resize = function() {
-            if (self.settings.width)
-                _$nodeChecklist.css('width', self.settings.width);
-            if (self.settings.height)
-                _$nodeChecklist.find('ul.list').css('max-height', self.settings.height);
-        };
-
-
-
-
-        /**
-         * Places the checklist in the DOM.
-         */
-        var _place = function() {
-            if (self.settings.placement == 'replace') {
-                $(container).html(_$nodeChecklist);
-            } else if (self.settings.placement == 'prepend') {
-                $(container).prepend(_$nodeChecklist);
-            } else {
-                // Check invalid and set default
-                if (self.settings.placement != 'append')
-                    _showError('placement');
-
-                $(container).append(_$nodeChecklist);
-            }
-        };
-
-
-
-
-        /**
-         * Destroys the checklist and the data associated to its instance
+         * Destroys the checklist and the data associated to its instance.
          */
         self.destroy = function() {
             // Remove element
@@ -299,29 +347,6 @@
 
 
 
-
-        /**
-         * Initializer.
-         */
-        var _init = function() {
-            // Set and check settings
-            self.settings = $.extend({}, _defaults, options);
-            _checkSettingsTypes();
-
-            // Prepare DOM node
-            _$nodeChecklist = $(_html.checklist
-                                     .replace('{labelAll}', self.settings.labelAll));
-
-            _resize();
-
-            _createListItems();
-
-            _bindEvents();
-
-            _updateLabel();
-
-            _place();
-        };
 
         if (_data == undefined && typeof options == 'object' && options )
             _init();         // Initialize
@@ -339,7 +364,7 @@
      * If "options" is a method name, tries to call it.
      * @param {Object} options - Specified options that will overwrite the default settings.
      */
-    $.fn.albhilazo_checklist = function(options) {
+    $.fn.albhilazo_checklist = function(options, methodParam) {
         return this.each(function() {
             var data = $(this).data('albhilazo.checklist');
             if (data == undefined)
@@ -348,7 +373,7 @@
             if (typeof options == 'string') {
                 // Manage methods
                 if (data[options])
-                    data[options]();
+                    data[options](methodParam);
                 else
                     console.error('ERROR (albhilazo.checklist): "' + options
                                   + '" is not a supported method.');
