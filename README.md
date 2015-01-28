@@ -2,7 +2,8 @@
 
 A simple jQuery-based checklist plugin.
 
-## [Demos](http://jsfiddle.net/albhilazo/anby8wnw)
+### [Options demos](http://jsfiddle.net/albhilazo/anby8wnw)
+### [Methods demos](http://jsfiddle.net/albhilazo/0t0ejwzv)
 
 ## Setup
 Just copy the JS and CSS files to your project and load them using:
@@ -10,6 +11,7 @@ Just copy the JS and CSS files to your project and load them using:
 <link rel="stylesheet" type="text/css" href="path/to/albhilazo.checklist.css">
 <script type="text/javascript" src="path/to/albhilazo.checklist.min.js"></script>
 ```
+
 
 ## Usage
 This checklist only needs two things to work: a container element and a list of items.
@@ -68,8 +70,8 @@ $.fn.albhilazo.checklist('#container').method(methodParam);
 The following methods are available:
 ```js
 $('#container').albhilazo_checklist(
-    'addItems', ["item1", "item2"]      // Adds the given items to the checklist
-    'removeItems', ["item1", "item2"]   // Removes the matching items from the checklist
+    'addItems', ["item1", "item2"]      // Adds the given items to the checklist (same format as options)
+    'removeItems', ["item1", "item2"]   // Removes the matching items from the checklist (strings only)
     'destroy'                           // Destroys the checklist instance
 );
 ```
