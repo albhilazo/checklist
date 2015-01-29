@@ -6,7 +6,8 @@
  * @requires  jquery-1.6+
  *
  * @link      https://github.com/albhilazo/checklist
- * @link      http://jsfiddle.net/albhilazo/anby8wnw
+ * [Options demos]{@link http://jsfiddle.net/albhilazo/anby8wnw}
+ * [Methods demos]{@link http://jsfiddle.net/albhilazo/0t0ejwzv}
  */
 
 
@@ -171,20 +172,6 @@
 
 
         /**
-         * onChange event handler.
-         * Will call specified "onChange" function in {@link self.settings}.
-         * @param {Event} e - Change event object.
-         */
-        var _eventChange = function(e) {
-            self.settings.onChange(e, self.$nodeChecklist, self.settings.onChangeParams);
-
-            _updateLabel();
-        };
-
-
-
-
-        /**
          * Binds events to the checklist.
          */
         var _bindEvents = function() {
@@ -194,6 +181,12 @@
                 self.$nodeChecklist.click(
                     function() { $(this).children('ul.list').toggle(); }
                 );
+                // Hide on outside click
+                $(document).mouseup(function(e) {
+                    if (!self.$nodeChecklist.is(e.target)
+                        && self.$nodeChecklist.has(e.target).length === 0)
+                        self.$nodeChecklist.children('ul.list').hide();
+                });
             } else {
                 // Check invalid and set default
                 if (self.settings.trigger != 'hover')
@@ -208,8 +201,11 @@
 
             // onChange
             if (self.settings.type == 'checkbox') {
-                self.$nodeChecklist.find('ul.list input:checkbox')
-                                   .change(_eventChange);
+                self.$nodeChecklist.find('ul.list input:checkbox').change(function(e) {
+                    self.settings.onChange(e, self.$nodeChecklist,
+                                              self.settings.onChangeParams);
+                    _updateLabel();
+                });
             }
         };
 
