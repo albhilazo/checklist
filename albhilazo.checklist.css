@@ -34,6 +34,7 @@
     font-size: 11px;
     font-weight: normal;
     text-decoration: none;
+    cursor: default;
 
     -webkit-user-select: none;
      -khtml-user-select: none;
@@ -42,7 +43,16 @@
             user-select: none;
     }
 
-.checklist:hover {
+.checklist.clclick:hover {
+    -webkit-border-radius: 3px;
+       -moz-border-radius: 3px;
+        -ms-border-radius: 3px;
+         -o-border-radius: 3px;
+            border-radius: 3px;
+    }
+
+.checklist:hover,
+.checklist.clclick.clactive {
     border: 1px solid #0693be;
     -webkit-border-radius: 3px 3px 0 0;
        -moz-border-radius: 3px 3px 0 0;
@@ -135,6 +145,7 @@
     margin-right: -3px;
     }
 
-.checklist:hover>.checklist-label:after {
+.checklist:hover>.checklist-label:after,
+.checklist.clclick.clactive>.checklist-label:after {
     border-top-color: #fff;
     }

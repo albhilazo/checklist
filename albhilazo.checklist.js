@@ -178,14 +178,16 @@
             // Trigger
             if (self.settings.trigger == 'click') {
                 // Click
-                self.$nodeChecklist.click(
-                    function() { $(this).children('ul.list').toggle(); }
-                );
+                self.$nodeChecklist.addClass('clclick').click(function() {
+                    $(this).toggleClass('clactive')
+                           .children('ul.list').toggle();
+                });
                 // Hide on outside click
                 $(document).mouseup(function(e) {
                     if (!self.$nodeChecklist.is(e.target)
                         && self.$nodeChecklist.has(e.target).length === 0)
-                        self.$nodeChecklist.children('ul.list').hide();
+                        self.$nodeChecklist.removeClass('clactive')
+                                           .children('ul.list').hide();
                 });
             } else {
                 // Check invalid and set default
