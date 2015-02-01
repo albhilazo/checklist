@@ -42,6 +42,7 @@
         /** Default settings */
         var _defaults = {
             items:     [],
+            itemHtml:  '',
             type:      'checkbox',
             trigger:   'hover',
             checked:   false,
@@ -80,7 +81,8 @@
         var _html = {
             checklist:    "<div class='checklist'> <div class='checklist-label'>{labelAll}</div> <ul class='list'></ul> </div>",
             checkboxItem: "<li><label><input type='checkbox' {checked}/>{item}</label></li>",
-            linkItem:     "<li><a href='{url}'>{item}</a></li>"
+            linkItem:     "<li><a href='{url}'>{item}</a></li>",
+            customItem:   "<li>{html}</li>"
         };
 
 
@@ -128,6 +130,7 @@
          */
         var _checkSettingsTypes = function() {
             _checkOptionType('items', self.settings.items, 'object');
+            _checkOptionType('itemHtml', self.settings.type, 'string');
             _checkOptionType('type', self.settings.type, 'string');
             _checkOptionType('trigger', self.settings.trigger, 'string');
             _checkOptionType('checked', self.settings.checked, 'boolean');
@@ -289,6 +292,11 @@
                                        .append(_html.linkItem
                                                     .replace('{item}', itemValue[0])
                                                     .replace('{url}', itemValue[1]));
+                } else if (self.settings.type == 'custom') {
+                    self.$nodeChecklist.children('ul.list')
+                                       .append(_html.customItem
+                                                    .replace('{html}', self.settings.itemHtml)
+                                                    .replace('{item}', itemValue));
                 } else {
                     // Check invalid and set default
                     if (self.settings.type != 'checkbox')
