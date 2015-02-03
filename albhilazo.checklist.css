@@ -100,21 +100,18 @@
 
 .checklist>.list>li { white-space: nowrap; }
 
-.checklist>.list>li>label,
-.checklist>.list>li>a {
+.checklist>.list>li>* {
     display: block;
     padding-left: 6px;
     padding-right: 10px;
     }
 
-.checklist>.list>li>label:hover,
-.checklist>.list>li>a:hover {
+.checklist>.list>li>*:hover {
     background-color: #339dbd;
     }
 
-.checklist>.list>li>label,
-.checklist>.list>li>label>input,
-.checklist>.list>li>a {
+.checklist>.list>li>*,
+.checklist>.list>li>label>input {
     width: inherit;
     cursor: pointer;
     /* Align with label */
