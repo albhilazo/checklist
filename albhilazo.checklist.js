@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin
  * @author    Albert Hilazo
- * @version   1.0.7
+ * @version   1.0.8
  *
  * @requires  jquery-1.6+
  *
@@ -46,6 +46,7 @@
             type:      'checkbox',
             trigger:   'hover',
             checked:   false,
+            checkAll:  false,
             placement: 'append',
             width:     '',
             height:    '',
@@ -79,7 +80,8 @@
 
         /** Injected HTML collection */
         var _html = {
-            checklist:    "<div class='checklist'> <div class='checklist-label'>{labelAll}</div> <ul class='list'></ul> </div>",
+            checklist:    "<div class='checklist'> <div class='checklist-label-wrapper'><div class='checklist-label'>{labelAll}</div></div> <ul class='list'></ul> </div>",
+            checkAll:     "<span class='checklist-checkall-icon' title='Check all'></span>",
             checkboxItem: "<li><label><input type='checkbox' {checked}/>{item}</label></li>",
             linkItem:     "<li><a href='{url}'>{item}</a></li>",
             customItem:   "<li>{html}</li>"
@@ -134,6 +136,7 @@
             _checkOptionType('type', self.settings.type, 'string');
             _checkOptionType('trigger', self.settings.trigger, 'string');
             _checkOptionType('checked', self.settings.checked, 'boolean');
+            _checkOptionType('checkAll', self.settings.checkAll, 'boolean');
             _checkOptionType('placement', self.settings.placement, 'string');
             _checkOptionType('width', self.settings.width, 'string');
             _checkOptionType('height', self.settings.height, 'string');
@@ -151,10 +154,28 @@
 
 
         /**
+         * Prepares the DOM node structure
+         */
+        var _prepare = function() {
+            // Basic structure
+            self.$nodeChecklist = $(_html.checklist
+                                         .replace('{labelAll}', self.settings.labelAll));
+
+            // checkAll
+            if (self.settings.type == 'checkbox' && self.settings.checkAll == true) {
+                self.$nodeChecklist.addClass('checklist-checkall')
+                                   .find('.checklist-label-wrapper').append(_html.checkAll);
+            }
+        };
+
+
+
+
+        /**
          * Updates the checklist's label according to the checked items.
          */
         var _updateLabel = function() {
-            var $label = self.$nodeChecklist.children('.checklist-label');
+            var $label = self.$nodeChecklist.find('.checklist-label');
             
             if (self.settings.type == 'link') {
                 $label.html( self.settings.labelLinks );
@@ -202,6 +223,20 @@
                     function() { $(this).children('ul.list').show(); },
                     function() { $(this).children('ul.list').hide(); }
                 );
+            }
+            
+            // checkAll
+            if (self.settings.type == 'checkbox' && self.settings.checkAll == true) {
+                self.$nodeChecklist.find('span.checklist-checkall-icon').click(function() {
+                    var $checkboxes = self.$nodeChecklist.find('ul.list input:checkbox');
+                    if ($checkboxes.length != $checkboxes.filter(':checked').length) {
+                        // Check all if any unchecked
+                        $checkboxes.prop('checked', true);
+                    } else {
+                        // Uncheck all if all checked
+                        $checkboxes.prop('checked', false);
+                    }
+                });
             }
 
             // onChange
@@ -258,9 +293,7 @@
             self.settings = $.extend({}, _defaults, options);
             _checkSettingsTypes();
 
-            // Prepare DOM node
-            self.$nodeChecklist = $(_html.checklist
-                                         .replace('{labelAll}', self.settings.labelAll));
+            _prepare();
 
             _resize();
 

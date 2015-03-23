@@ -32,6 +32,7 @@ $('#container').albhilazo_checklist({
     type:      'checkbox',      // Defines the type of the items (accepted: 'checkbox', 'link')
     trigger:   'hover',         // Defines the event that will show the list (accepted: 'hover', 'click')
     checked:   false,           // Boolean. Default checked status if not specified in items (true = checked)
+    checkAll:  false,           // Boolean. Enables "Check All" feature for type:'checkbox'
     placement: 'append',        // How it will be inserted in the container (accepted: 'replace', 'prepend', 'append')
     width:     '100%',          // Width value for the label, not the list
     height:    '300px',         // Max height before displaying a scrollbar
