@@ -43,7 +43,9 @@ $('#container').albhilazo_checklist({
     labelAll:      'All',       // Text displayed for all checked
     labelFiltered: 'Filtered',  // Text displayed for some checked
     labelNone:     'None',      // Text displayed for none checked
-    labelLinks:    'Links'      // Text displayed if 'type'='links'
+    labelLinks:    'Links',     // Text displayed if 'type'='links'
+
+    debug: false                // If enabled, the plugin will output any error or log message that occurs
 });
 ```
 
