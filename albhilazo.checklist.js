@@ -240,7 +240,10 @@
             
             // checkAll
             if (self.settings.type == 'checkbox' && self.settings.checkAll == true) {
-                self.$nodeChecklist.find('span.checklist-checkall-icon').click(function() {
+                self.$nodeChecklist.find('span.checklist-checkall-icon').click(function(e) {
+                    // Avoid propagation for trigger:'click'
+                    e.stopPropagation();
+
                     var $checkboxes = self.$nodeChecklist.find('ul.list input:checkbox');
                     if ($checkboxes.length != $checkboxes.filter(':checked').length) {
                         // Check all if any unchecked

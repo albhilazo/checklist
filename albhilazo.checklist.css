@@ -150,13 +150,13 @@ span.checklist-checkall-icon:after {
     content: "\2713";
     }
 
-.checklist.checklist-checkall:hover            span.checklist-checkall-icon,
-.checklist.checklist-checkall.clclick.clactive span.checklist-checkall-icon {
+.checklist.checklist-checkall:not(.clclick):hover span.checklist-checkall-icon,
+.checklist.checklist-checkall.clclick.clactive    span.checklist-checkall-icon {
     display: block;
     }
 
-.checklist.checklist-checkall:hover            .checklist-label-wrapper,
-.checklist.checklist-checkall.clclick.clactive .checklist-label-wrapper {
+.checklist.checklist-checkall:not(.clclick):hover .checklist-label-wrapper,
+.checklist.checklist-checkall.clclick.clactive    .checklist-label-wrapper {
     padding-right: 34px;
     }
 
