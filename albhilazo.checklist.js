@@ -43,7 +43,7 @@
         /** Default settings */
         var _defaults = {
             items:     [],
-            itemHtml:  '',
+            itemHtml:  '{{item}}',
             type:      'checkbox',
             trigger:   'hover',
             checked:   false,
