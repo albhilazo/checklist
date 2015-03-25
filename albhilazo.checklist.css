@@ -66,6 +66,7 @@
     }
 
 
+/* Label */
 .checklist > .checklist-label-wrapper {
     position: relative;
     padding-left: 10px;
@@ -80,6 +81,7 @@
     }
 
 
+/* List */
 .checklist > .list {
     display: none;
     position: absolute;
@@ -101,6 +103,11 @@
         -ms-border-radius: 0 3px 3px 3px;
          -o-border-radius: 0 3px 3px 3px;
             border-radius: 0 3px 3px 3px;
+    }
+
+.checklist:not(.clclick):hover > .list,
+.checklist.clclick.clactive > .list {
+    display:block;
     }
 
 

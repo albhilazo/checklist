@@ -38,8 +38,12 @@ $('#container').albhilazo_checklist({
     width:     '100%',          // Width value for the label, not the list
     height:    '300px',         // Max height before displaying a scrollbar
 
-    onChange: function(event, $chlist, onChangeParams) {},  // Callback when an item is checked/unchecked
-    onChangeParams: {},                                     // Extra parameters that will be passed to 'onChange'
+    onShow:         function(event, $chlist, onChangeParams) {},  // Callback when the list is shown
+    onShowParams:   {},                                           // Extra parameters passed to 'onShow'
+    onHide:         function(event, $chlist, onChangeParams) {},  // Callback when the list is hidden
+    onHideParams:   {},                                           // Extra parameters passed to 'onHide'
+    onChange:       function(event, $chlist, onChangeParams) {},  // Callback when an item is checked/unchecked
+    onChangeParams: {},                                           // Extra parameters passed to 'onChange'
 
     labelAll:      'All',       // Text displayed for all checked
     labelFiltered: 'Filtered',  // Text displayed for some checked

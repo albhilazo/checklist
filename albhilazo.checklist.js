@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin
  * @author    Albert Hilazo
- * @version   1.0.10
+ * @version   1.0.11
  *
  * @requires  jquery-1.6+
  *
@@ -52,7 +52,11 @@
             width:     '',
             height:    '',
 
-            onChange: function() {},
+            onShow:         function() {},
+            onShowParams:   {},
+            onHide:         function() {},
+            onHideParams:   {},
+            onChange:       function() {},
             onChangeParams: {},
 
             labelAll:      'All',
@@ -212,19 +216,20 @@
          * Binds events to the checklist.
          */
         var _bindEvents = function() {
+            var $list = self.$nodeChecklist.children('ul.list');
+
             // Trigger
             if (self.settings.trigger == 'click') {
                 // Click
                 self.$nodeChecklist.addClass('clclick').click(function() {
-                    $(this).toggleClass('clactive')
-                           .children('ul.list').toggle();
+                    self.$nodeChecklist.toggleClass('clactive', !($list.is(':visible')));
                 });
                 // Hide on outside click
                 $(document).mouseup(function(e) {
                     if (!self.$nodeChecklist.is(e.target)
-                        && self.$nodeChecklist.has(e.target).length === 0)
-                        self.$nodeChecklist.removeClass('clactive')
-                                           .children('ul.list').hide();
+                        && self.$nodeChecklist.has(e.target).length === 0) {
+                        self.$nodeChecklist.removeClass('clactive');
+                    }
                 });
             } else {
                 // Check invalid and set default
@@ -234,8 +239,12 @@
 
                 // Hover
                 self.$nodeChecklist.hover(
-                    function() { $(this).children('ul.list').show(); },
-                    function() { $(this).children('ul.list').hide(); }
+                    function(e) {
+                        self.settings.onShow(e, self.$nodeChecklist, self.settings.onShowParams);
+                    },
+                    function(e) {
+                        self.settings.onHide(e, self.$nodeChecklist, self.settings.onHideParams);
+                    }
                 );
             }
             
@@ -245,7 +254,7 @@
                     // Avoid propagation for trigger:'click'
                     e.stopPropagation();
 
-                    var $checkboxes = self.$nodeChecklist.find('ul.list input:checkbox');
+                    var $checkboxes = $list.find('input:checkbox');
                     if ($checkboxes.length != $checkboxes.filter(':checked').length) {
                         // Check all if any unchecked
                         $checkboxes.prop('checked', true);
@@ -258,9 +267,8 @@
 
             // onChange
             if (self.settings.type == 'checkbox') {
-                self.$nodeChecklist.find('ul.list input:checkbox').change(function(e) {
-                    self.settings.onChange(e, self.$nodeChecklist,
-                                              self.settings.onChangeParams);
+                $list.find('input:checkbox').change(function(e) {
+                    self.settings.onChange(e, self.$nodeChecklist, self.settings.onChangeParams);
                     _updateLabel();
                 });
             }
