@@ -16,13 +16,6 @@
  */
 
 .checklist {
-    border: 1px solid #c8c8c8;
-    -webkit-border-radius: 3px;
-       -moz-border-radius: 3px;
-        -ms-border-radius: 3px;
-         -o-border-radius: 3px;
-            border-radius: 3px;
-
     display: inline-block;
     position: relative;
     width: 100%;
@@ -30,6 +23,13 @@
     line-height: 16px;
 
     color: #646464;
+    border: 1px solid #c8c8c8;
+    -webkit-border-radius: 3px;
+       -moz-border-radius: 3px;
+        -ms-border-radius: 3px;
+         -o-border-radius: 3px;
+            border-radius: 3px;
+
     font-family: Verdana, Tahoma, sans-serif;
     font-size: 11px;
     font-weight: normal;
@@ -44,6 +44,8 @@
     }
 
 .checklist.clclick:hover {
+    color: #005580;
+    background-color: #d9edf7;
     -webkit-border-radius: 3px;
        -moz-border-radius: 3px;
         -ms-border-radius: 3px;
@@ -53,18 +55,18 @@
 
 .checklist:hover,
 .checklist.clclick.clactive {
+    color: #fff;
+    background-color: #0693be;
     border: 1px solid #0693be;
     -webkit-border-radius: 3px 3px 0 0;
        -moz-border-radius: 3px 3px 0 0;
         -ms-border-radius: 3px 3px 0 0;
          -o-border-radius: 3px 3px 0 0;
             border-radius: 3px 3px 0 0;
-    background-color: #0693be;
-    color: #fff;
     }
 
 
-.checklist>.checklist-label-wrapper {
+.checklist > .checklist-label-wrapper {
     position: relative;
     padding-left: 10px;
     padding-right: 15px;
@@ -78,43 +80,46 @@
     }
 
 
-.checklist>.list {
+.checklist > .list {
     display: none;
     position: absolute;
+    margin: -1px 0 0 -1px;
+    padding: 5px 0 5px 0;
+    min-width: 100%;
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
     z-index: 200;
+
     list-style-type: none;
+
+    color: #fff;
+    background-color: #0693be;
     border: 1px solid #0693be;
     -webkit-border-radius: 0 3px 3px 3px;
        -moz-border-radius: 0 3px 3px 3px;
         -ms-border-radius: 0 3px 3px 3px;
          -o-border-radius: 0 3px 3px 3px;
             border-radius: 0 3px 3px 3px;
-    background-color: #0693be;
-    color: #fff;
-    margin: -1px 0 0 -1px;
-    padding: 5px 0 5px 0;
-
-    min-width: 100%;
-    max-height: 300px;
-    overflow-x: hidden;
-    overflow-y: auto;
     }
 
 
-.checklist>.list>li { white-space: nowrap; }
+.checklist > .list > li {
+    white-space: nowrap;
+    }
 
-.checklist>.list>li>* {
+.checklist > .list > li > * {
     display: block;
     padding-left: 6px;
     padding-right: 10px;
     }
 
-.checklist>.list>li>*:hover {
+.checklist > .list > li > *:hover {
     background-color: #339dbd;
     }
 
-.checklist>.list>li>*,
-.checklist>.list>li>label>input {
+.checklist > .list > li > *,
+.checklist > .list > li > label > input {
     width: inherit;
     cursor: pointer;
     /* Align with label */
@@ -125,9 +130,9 @@
 
 
 /* Override link style */
-.checklist>.list>li>a {
-    text-decoration: none;
+.checklist > .list > li > a {
     color: #fff;
+    text-decoration: none;
 }
 
 
@@ -139,11 +144,12 @@ span.checklist-checkall-icon {
     right: 15px;
     padding-left: 8px;
     padding-right: 8px;
-    cursor: pointer;
+
     font-family: Verdana, Tahoma, sans-serif;
     font-size: 11px;
     font-weight: bold;
     text-decoration: none;
+    cursor: pointer;
     }
 
 span.checklist-checkall-icon:after {
@@ -164,18 +170,19 @@ span.checklist-checkall-icon:after {
 /* Dropdown arrow */
 .checklist>.checklist-label-wrapper:after {
     content:'';
-    height: 0;
-    width: 0;
-    border: 4px solid transparent;
-    border-top-color: #000;
     position: absolute;
     top: 50%;
     right: 10px;
     margin-top: -3px;
     margin-right: -3px;
+    width: 0;
+    height: 0;
+
+    border: 4px solid transparent;
+    border-top-color: #000;
     }
 
-.checklist:hover            > .checklist-label-wrapper:after,
-.checklist.clclick.clactive > .checklist-label-wrapper:after {
+.checklist:not(.clclick):hover > .checklist-label-wrapper:after,
+.checklist.clclick.clactive    > .checklist-label-wrapper:after {
     border-top-color: #fff;
     }
