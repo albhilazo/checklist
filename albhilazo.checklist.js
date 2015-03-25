@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin
  * @author    Albert Hilazo
- * @version   1.0.9
+ * @version   1.0.10
  *
  * @requires  jquery-1.6+
  *
@@ -67,7 +67,7 @@
         var _strings = {
             error: {
                 optType:   'ERROR ('+self.NAME+'): "{{curtype}}" is not a supported value type for "{{option}}" option. Expected type "{{exptype}}". Using default value.',
-                type:      'ERROR ('+self.NAME+'): "{{type}}" is not a supported value for "type" option. Supported values are "checkbox" and "link". Using default value.',
+                type:      'ERROR ('+self.NAME+'): "{{type}}" is not a supported value for "type" option. Supported values are "checkbox", "link" and "custom". Using default value.',
                 trigger:   'ERROR ('+self.NAME+'): "{{trigger}}" is not a supported value for "trigger" option. Supported values are "hover" and "click". Using default value.',
                 placement: 'ERROR ('+self.NAME+'): "{{placement}}" is not a supported value for "placement" option. Supported values are "replace", "prepend" and "append". Using default value.'
             }
@@ -90,6 +90,7 @@
         /**
          * Outputs a console message only if settings.debug is enabled.
          * @param {String} msj - Message to output.
+         * @param {Boolean} isError - Optional, defaults to FALSE. If TRUE outputs as error.
          */
         var _debug = function(msj, isError) {
             if (self.settings.debug) {
@@ -143,7 +144,7 @@
          */
         var _checkSettingsTypes = function() {
             _checkOptionType('items', self.settings.items, 'object');
-            _checkOptionType('itemHtml', self.settings.type, 'string');
+            _checkOptionType('itemHtml', self.settings.itemHtml, 'string');
             _checkOptionType('type', self.settings.type, 'string');
             _checkOptionType('trigger', self.settings.trigger, 'string');
             _checkOptionType('checked', self.settings.checked, 'boolean');
@@ -437,7 +438,7 @@
                 if (data[options]) {
                     data[options](methodParam);
                 } else {
-                    _debug('ERROR (albhilazo.checklist): "'+options+'" is not a supported method.', true);
+                    console.error('ERROR (albhilazo.checklist): "'+options+'" is not a supported method.');
                 }
             }
         });

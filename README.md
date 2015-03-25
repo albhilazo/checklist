@@ -29,7 +29,8 @@ $('#container').albhilazo_checklist({
     // Both methods can be used at the same time ( ["item1", ["item2",true]] )
     // If the 'type' option is set to 'links' the format must be ( [["item1","url1"], ["item2","url2"]] )
     items:     [],
-    type:      'checkbox',      // Defines the type of the items (accepted: 'checkbox', 'link')
+    itemHtml:  '{{item}}',      // Item HTML if type:'custom'. The placeholder '{{item}}' will be replaced with the value
+    type:      'checkbox',      // Defines the type of the items (accepted: 'checkbox', 'link', 'custom')
     trigger:   'hover',         // Defines the event that will show the list (accepted: 'hover', 'click')
     checked:   false,           // Boolean. Default checked status if not specified in items (true = checked)
     checkAll:  false,           // Boolean. Enables "Check All" feature for type:'checkbox'
@@ -37,13 +38,13 @@ $('#container').albhilazo_checklist({
     width:     '100%',          // Width value for the label, not the list
     height:    '300px',         // Max height before displaying a scrollbar
 
-    onChange: function(e, $chlist, onChangeParams) {},  // Callback when an item is checked/unchecked
-    onChangeParams: {},                                 // Extra parameters that will be passed to 'onChange'
+    onChange: function(event, $chlist, onChangeParams) {},  // Callback when an item is checked/unchecked
+    onChangeParams: {},                                     // Extra parameters that will be passed to 'onChange'
 
     labelAll:      'All',       // Text displayed for all checked
     labelFiltered: 'Filtered',  // Text displayed for some checked
     labelNone:     'None',      // Text displayed for none checked
-    labelLinks:    'Links',     // Text displayed if 'type'='links'
+    labelLinks:    'Links',     // Text displayed if type:'links'
 
     debug: false                // If enabled, the plugin will output any error or log message that occurs
 });
