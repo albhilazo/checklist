@@ -81,5 +81,6 @@ $('#container').albhilazo_checklist(
     'addItems', ["item1", "item2"]      // Adds the given items to the checklist (same format as options)
     'removeItems', ["item1", "item2"]   // Removes the matching items from the checklist (strings only)
     'destroy'                           // Destroys the checklist instance
+    'reset'                             // Reinitializes the checklist with the original options
 );
 ```

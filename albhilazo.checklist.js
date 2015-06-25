@@ -405,6 +405,17 @@
 
 
         /**
+         * Reinitializes the checklist with the original options and checkbox state.
+         */
+        self.reset = function() {
+            self.destroy();
+            _init();
+        };
+
+
+
+
+        /**
          * Destroys the checklist and the data associated to its instance.
          */
         self.destroy = function() {
