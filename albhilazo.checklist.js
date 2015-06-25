@@ -1,7 +1,7 @@
 /**
  * Checklist jQuery plugin
  * @author    Albert Hilazo
- * @version   1.0.11
+ * @version   1.0.12
  *
  * @requires  jquery-1.6+
  *
