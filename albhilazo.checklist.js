@@ -257,10 +257,10 @@
                     var $checkboxes = $list.find('input:checkbox');
                     if ($checkboxes.length != $checkboxes.filter(':checked').length) {
                         // Check all if any unchecked
-                        $checkboxes.prop('checked', true);
+                        $checkboxes.prop('checked', true).trigger('change');
                     } else {
                         // Uncheck all if all checked
-                        $checkboxes.prop('checked', false);
+                        $checkboxes.prop('checked', false).trigger('change');
                     }
 
                     _updateLabel();
