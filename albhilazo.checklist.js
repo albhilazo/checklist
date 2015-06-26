@@ -262,6 +262,8 @@
                         // Uncheck all if all checked
                         $checkboxes.prop('checked', false);
                     }
+
+                    _updateLabel();
                 });
             }
 
